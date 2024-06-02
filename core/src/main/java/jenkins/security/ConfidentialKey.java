@@ -6,6 +6,7 @@ import hudson.tasks.Builder;
 import hudson.util.Secret;
 import java.io.IOException;
 import jenkins.slaves.JnlpAgentReceiver;
+import org.gravity.security.annotations.requirements.Secrecy;
 
 /**
  * Confidential information that gets stored as a singleton in Jenkins, mostly some random token value.
@@ -42,6 +43,7 @@ public abstract class ConfidentialKey {
         this.id = id;
     }
 
+    @Secrecy
     protected @CheckForNull byte[] load() throws IOException {
         return ConfidentialStore.get().load(this);
     }

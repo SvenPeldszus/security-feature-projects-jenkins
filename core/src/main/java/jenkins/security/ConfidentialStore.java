@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jenkins.model.Jenkins;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.kohsuke.MetaInfServices;
 
 /**
@@ -52,6 +53,7 @@ public abstract class ConfidentialStore {
      * @return
      *      null the data has not been previously persisted, or if the data was tampered.
      */
+    @Secrecy
     protected abstract @CheckForNull byte[] load(ConfidentialKey key) throws IOException;
 
     // TODO consider promoting to public, and offering a default implementation of randomBytes (via the usual Util.isOverridden binary compat trick)
