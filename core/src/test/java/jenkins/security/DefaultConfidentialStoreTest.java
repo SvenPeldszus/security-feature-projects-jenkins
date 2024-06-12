@@ -11,9 +11,13 @@ import java.io.File;
 import java.nio.charset.MalformedInputException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
+import org.gravity.security.annotations.requirements.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
+@Critical(secrecy={"ConfidentialStore.load(ConfidentialKey):byte[]"}, integrity= {"ConfidentialStore.load(ConfidentialKey):byte[]"})
 
 public class DefaultConfidentialStoreTest {
 
