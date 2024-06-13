@@ -1,6 +1,9 @@
 package hudson.security;
 
-import org.gravity.security.annotations.requirements.Secrecy;
+import hudson.Util;
+import jenkins.model.Jenkins;
+import jenkins.security.ImpersonatingUserDetailsService2;
+import jenkins.security.SecurityListener;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.Beta;
 import org.springframework.security.authentication.AnonymousAuthenticationProvider;
@@ -13,21 +16,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import hudson.Util;
-import jenkins.model.Jenkins;
-import jenkins.security.ImpersonatingUserDetailsService2;
-import jenkins.security.SecurityListener;
-
 /**
- * Partial implementation of {@link SecurityRealm} for username/password based authentication. This
- * is a convenience base class if all you are trying to do is to check the given username and
- * password with the information stored in somewhere else, and you don't want to do anything with
- * Spring Security.
+ * Partial implementation of {@link SecurityRealm} for username/password based authentication.
+ * This is a convenience base class if all you are trying to do is to check the given username
+ * and password with the information stored in somewhere else, and you don't want to do anything
+ * with Spring Security.
  *
  * <p>
- * This {@link SecurityRealm} uses the standard login form (and a few other optional mechanisms like
- * BASIC auth) to gather the username/password information. Subtypes are responsible for
- * authenticating this information.
+ * This {@link SecurityRealm} uses the standard login form (and a few other optional mechanisms like BASIC auth)
+ * to gather the username/password information. Subtypes are responsible for authenticating this information.
  *
  * @author Kohsuke Kawaguchi
  * @since 1.317
@@ -45,39 +42,34 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
         AnonymousAuthenticationProvider aap = new AnonymousAuthenticationProvider("anonymous");
         AuthenticationManager authenticationManager = new ProviderManager(authenticator, rmap, aap);
         return new SecurityComponents(
-            authenticationManager,
-            new ImpersonatingUserDetailsService2(this::loadUserByUsername2));
+                authenticationManager,
+                new ImpersonatingUserDetailsService2(this::loadUserByUsername2));
     }
 
     /**
-     * Authenticate a login attempt. This method is the heart of a
-     * {@link AbstractPasswordBasedSecurityRealm}.
+     * Authenticate a login attempt.
+     * This method is the heart of a {@link AbstractPasswordBasedSecurityRealm}.
      *
      * <p>
      * If the user name and the password pair matches, retrieve the information about this user and
-     * return it as a {@link UserDetails} object.
-     * {@link org.springframework.security.core.userdetails.User} is a convenient implementation to
-     * use, but if your backend offers additional data, you may want to use your own subtype so that
-     * the rest of Hudson can use those additional information (such as e-mail address --- see
+     * return it as a {@link UserDetails} object. {@link org.springframework.security.core.userdetails.User} is a convenient
+     * implementation to use, but if your backend offers additional data, you may want to use your own subtype
+     * so that the rest of Hudson can use those additional information (such as e-mail address --- see
      * MailAddressResolver.)
      *
      * <p>
-     * Properties like {@link UserDetails#getPassword()} make no sense, so just return an empty
-     * value from it. The only information that you need to pay real attention is
-     * {@link UserDetails#getAuthorities()}, which is a list of roles/groups that the user is in. At
-     * minimum, this must contain {@link #AUTHENTICATED_AUTHORITY} (which indicates that this user
-     * is authenticated and not anonymous), but if your backend supports a notion of groups, you
-     * should make sure that the authorities contain one entry per one group. This enables users to
-     * control authorization based on groups.
+     * Properties like {@link UserDetails#getPassword()} make no sense, so just return an empty value from it.
+     * The only information that you need to pay real attention is {@link UserDetails#getAuthorities()}, which
+     * is a list of roles/groups that the user is in. At minimum, this must contain {@link #AUTHENTICATED_AUTHORITY}
+     * (which indicates that this user is authenticated and not anonymous), but if your backend supports a notion
+     * of groups, you should make sure that the authorities contain one entry per one group. This enables
+     * users to control authorization based on groups.
      *
      * <p>
-     * If the user name and the password pair doesn't match, throw {@link AuthenticationException}
-     * to reject the login attempt.
-     *
+     * If the user name and the password pair doesn't match, throw {@link AuthenticationException} to reject the login
+     * attempt.
      * @since 2.266
      */
-    @Secrecy
-    // TODO: Parameter enthaelt username und password
     protected UserDetails authenticate2(String username, String password) throws AuthenticationException {
         if (Util.isOverridden(AbstractPasswordBasedSecurityRealm.class, getClass(), "authenticate", String.class, String.class)) {
             try {
@@ -92,12 +84,9 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
 
     /**
      * A public alias of @{link {@link #authenticate2(String, String)}.
-     *
      * @since 2.444
      */
     @Restricted(Beta.class)
-    @Secrecy
-    // TODO: Parameter enthaelt username und password
     public final UserDetails authenticateByPassword(String username, String password) throws AuthenticationException {
         return authenticate2(username, password);
     }
@@ -114,8 +103,6 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
         }
     }
 
-    @Secrecy
-    // TODO: Parameter enthaelt username und password
     private UserDetails doAuthenticate(String username, String password) throws AuthenticationException {
         try {
             UserDetails user = authenticate2(username, password);
@@ -131,10 +118,9 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
      * Retrieves information about an user by its name.
      *
      * <p>
-     * This method is used, for example, to validate if the given token is a valid user name when
-     * the user is configuring an ACL. This is an optional method that improves the user experience.
-     * If your backend doesn't support a query like this, just always throw
-     * {@link UsernameNotFoundException}.
+     * This method is used, for example, to validate if the given token is a valid user name when the user is configuring an ACL.
+     * This is an optional method that improves the user experience. If your backend doesn't support
+     * a query like this, just always throw {@link UsernameNotFoundException}.
      */
     @Override
     public UserDetails loadUserByUsername2(String username) throws UsernameNotFoundException {

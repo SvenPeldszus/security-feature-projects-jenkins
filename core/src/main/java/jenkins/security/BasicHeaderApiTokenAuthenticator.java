@@ -34,7 +34,7 @@ public class BasicHeaderApiTokenAuthenticator extends BasicHeaderAuthenticator {
      */
     @Override
     @Secrecy
-    // TODO: Parameter enthaelt req, username und password
+    // Parameter enthaelt req, username und password
     public Authentication authenticate2(HttpServletRequest req, HttpServletResponse rsp, String username, String password) throws ServletException {
         User u = BasicApiTokenHelper.isConnectingUsingApiToken(username, password);
         if (u != null) {
