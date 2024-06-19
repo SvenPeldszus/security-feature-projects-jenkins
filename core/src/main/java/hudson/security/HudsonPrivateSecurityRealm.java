@@ -81,6 +81,10 @@ import jenkins.security.SecurityListener;
 import jenkins.security.seed.UserSeedProperty;
 import jenkins.util.SystemProperties;
 import net.sf.json.JSONObject;
+
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.jenkinsci.Symbol;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
@@ -113,6 +117,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *
  * @author Kohsuke Kawaguchi
  */
+@Critical(secrecy = {"HudsonPrivateSecurityRealm.createAccount(StaplerRequest,StaplerResponse,boolean,String):User"}, integrity = {"createAccount(StaplerRequest, StaplerResponse, boolean, String):User"})
 public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRealm implements ModelObject, AccessControlled {
     private static final int FIPS_PASSWORD_LENGTH = 14;
     private static /* not final */ String ID_REGEX = System.getProperty(HudsonPrivateSecurityRealm.class.getName() + ".ID_REGEX");
@@ -269,6 +274,8 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
         return _doCreateAccount(req, rsp, "signup.jelly");
     }
 
+    // @Secrecy
+    // @Integrity
     private User _doCreateAccount(StaplerRequest req, StaplerResponse rsp, String formView) throws ServletException, IOException {
         if (!allowsSignup())
             throw HttpResponses.errorWithoutStack(SC_UNAUTHORIZED, "User sign up is prohibited");
@@ -286,6 +293,7 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
     /**
      * Lets the current user silently login as the given user and report back accordingly.
      */
+    @Secrecy
     private void loginAndTakeBack(StaplerRequest req, StaplerResponse rsp, User u) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session != null) {
@@ -295,11 +303,13 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
         req.getSession(true);
 
         // ... and let him login
+        // &begin[use_auth]
         Authentication a = new UsernamePasswordAuthenticationToken(u.getId(), req.getParameter("password1"));
         a = this.getSecurityComponents().manager2.authenticate(a);
         SecurityContextHolder.getContext().setAuthentication(a);
-
+        
         SecurityListener.fireLoggedIn(u.getId());
+        // &end[use_auth]
 
         // then back to top
         req.getView(this, "success.jelly").forward(req, rsp);
@@ -365,6 +375,8 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
      * This can be run by anyone, but only to create the very first user account.
      */
     @RequirePOST
+    // @Secrecy
+    // @Integrity
     public void doCreateFirstAccount(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         if (hasSomeUser()) {
             rsp.sendError(SC_UNAUTHORIZED, "First user was already created");
