@@ -3,6 +3,11 @@ package jenkins.security;
 import hudson.Util;
 import java.io.IOException;
 
+import org.gravity.security.annotations.requirements.Critical;
+
+@Critical(secrecy= {"HexStringConfidentialKey.get():String"})
+
+// &begin[feat_HexConfidentialKey]
 /**
  * {@link ConfidentialKey} that is the random hexadecimal string of length N.
  *
@@ -61,3 +66,4 @@ public class HexStringConfidentialKey extends ConfidentialKey {
         return secret;
     }
 }
+// &end[feat_HexConfidentialKey]

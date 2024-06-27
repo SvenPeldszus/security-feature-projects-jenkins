@@ -7,9 +7,16 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.gravity.security.annotations.requirements.*;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 
+@Critical(secrecy={"Secret.getEncryptedValue():String","CryptoConfidentialKey.getKey():SecretKey","secret:SecretKey", "ConfidentialKey.load():byte[]","secret:SecretKey", "CryptoConfidentialKey.getKey():SecretKey", "encrypt():Cipher", "decrypt(byte[]):Cipher"},
+		  integrity={"Secret.getEncryptedValue():String","encrypt():Cipher", "decrypt(byte[]):Cipher", "KEY_ALGORITHM:String", "CryptoConfidentialKey.newIv():byte[]",
+				     "CryptoConfidentialKey.getKey():SecretKey", "DEFAULT_IV_LENGTH:int"})
+
+// &begin[feat_CryptoKey]
 /**
  * {@link ConfidentialKey} that stores a {@link SecretKey} for shared-secret cryptography (AES).
  *
@@ -17,10 +24,11 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
  * @since 1.498
  */
 public class CryptoConfidentialKey extends ConfidentialKey {
-    @Restricted(NoExternalUse.class) // TODO pending API
+    @Restricted(NoExternalUse.class) @Integrity // TODO pending API
     public static final int DEFAULT_IV_LENGTH = 16;
 
     private ConfidentialStore lastCS;
+    @Secrecy
     private SecretKey secret;
 
     public CryptoConfidentialKey(String id) {
@@ -30,6 +38,7 @@ public class CryptoConfidentialKey extends ConfidentialKey {
     public CryptoConfidentialKey(Class owner, String shortName) {
         this(owner.getName() + '.' + shortName);
     }
+
 
     private synchronized SecretKey getKey() {
         ConfidentialStore cs = ConfidentialStore.get();
@@ -134,8 +143,10 @@ public class CryptoConfidentialKey extends ConfidentialKey {
         }
     }
 
-
+    @Integrity
     private static final String KEY_ALGORITHM = "AES";
+    @Integrity
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
 
 }
+// &end[feat_CryptoKey]

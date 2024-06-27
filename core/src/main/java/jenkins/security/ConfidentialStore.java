@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jenkins.model.Jenkins;
-
 import org.gravity.security.annotations.requirements.*;
 import org.kohsuke.MetaInfServices;
 

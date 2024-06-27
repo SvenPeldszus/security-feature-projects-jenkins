@@ -37,7 +37,12 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
+import org.gravity.security.annotations.requirements.*;
 
+@Critical(secrecy={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey","RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey"},
+		  integrity= {"RSAConfidentialKey.getPrivateKey():RSAPrivateKey", "RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey"})
+
+//&begin[feat_RSAKey]
 /**
  * RSA public/private key pair as {@link ConfidentialKey}.
  *
@@ -50,7 +55,9 @@ import java.util.Base64;
 public abstract class RSAConfidentialKey extends ConfidentialKey {
 
     private ConfidentialStore lastCS;
+    @Secrecy @Integrity
     private RSAPrivateKey priv;
+    @Integrity
     private RSAPublicKey pub;
 
     protected RSAConfidentialKey(String id) {
@@ -111,3 +118,4 @@ public abstract class RSAConfidentialKey extends ConfidentialKey {
         return Base64.getEncoder().encodeToString(getPublicKey().getEncoded());
     }
 }
+// &end[feat_RSAKey]

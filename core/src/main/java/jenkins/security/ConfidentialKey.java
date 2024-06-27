@@ -49,6 +49,7 @@ public abstract class ConfidentialKey {
         this.id = id;
     }
 
+    @Secrecy
     protected @CheckForNull byte[] load() throws IOException {
         return ConfidentialStore.get().load(this);
     }
