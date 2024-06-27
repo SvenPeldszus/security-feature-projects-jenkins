@@ -47,9 +47,14 @@ import java.util.regex.Pattern;
 import javax.crypto.Cipher;
 import jenkins.security.CryptoConfidentialKey;
 import jenkins.util.SystemProperties;
+import org.gravity.security.annotations.requirements.*;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.Stapler;
+
+@Critical(secrecy= {"Secret.getEncryptedValue():String", "Secret.Secret(String)", "Secret.Secret(String,byte[])","Secret.hashCode():int"},
+		  integrity= {"Secret.getEncryptedValue():String","Secret.decrypt(String):Secret"}) 
+// &begin[feat_Secret]
 
 /**
  * Glorified {@link String} that uses encryption in the persisted form, to avoid accidental exposure of a secret.
@@ -71,7 +76,7 @@ public final class Secret implements Serializable {
     /**
      * Unencrypted secret text.
      */
-    @NonNull
+    @NonNull @Secrecy
     private final String value;
     private byte[] iv;
 
@@ -343,3 +348,5 @@ public final class Secret implements Serializable {
         }
     }
 }
+
+// &end[feat_Secret]
