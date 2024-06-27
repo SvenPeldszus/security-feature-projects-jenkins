@@ -3,8 +3,12 @@ package jenkins.security;
 import static org.junit.Assert.assertArrayEquals;
 
 import java.nio.charset.StandardCharsets;
+
+import org.gravity.security.annotations.requirements.*;
 import org.junit.Rule;
 import org.junit.Test;
+
+@Critical(integrity={"CryptoConfidentialKey.decrypt():Cipher", "CryptoConfidentialKey.encrypt():Cipher", "CryptoConfidentialKeyTest.decryptGetsPlainTextBack():void"})
 
 public class CryptoConfidentialKeyTest {
 

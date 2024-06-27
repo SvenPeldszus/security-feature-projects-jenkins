@@ -19,6 +19,7 @@ import org.junit.rules.TemporaryFolder;
 
 @Critical(secrecy={"ConfidentialStore.load(ConfidentialKey):byte[]"}, integrity= {"ConfidentialStore.load(ConfidentialKey):byte[]"})
 
+//&begin[use_ConfidentialStoreTest]
 public class DefaultConfidentialStoreTest {
 
     @Rule
@@ -54,3 +55,4 @@ public class DefaultConfidentialStoreTest {
     }
 
 }
+// &end[use_ConfidentialStoreTest]
