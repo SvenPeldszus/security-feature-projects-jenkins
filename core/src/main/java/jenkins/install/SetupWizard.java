@@ -63,6 +63,7 @@ import jenkins.util.UrlHelper;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.io.IOUtils;
+import org.gravity.security.annotations.requirements.*;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.DoNotUse;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
@@ -76,6 +77,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+@Critical(secrecy={"SetupWizard.createInitialApiToken(User):void"}) 
 
 /**
  * A Jenkins instance used during first-run to provide a limited set of services while

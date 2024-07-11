@@ -40,8 +40,10 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import jenkins.model.Jenkins;
 import jenkins.security.ConfidentialStoreRule;
+
 import org.junit.Rule;
 import org.junit.Test;
+
 
 public class SecretTest {
 

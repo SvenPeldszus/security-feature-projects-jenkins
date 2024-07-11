@@ -1,5 +1,6 @@
 package jenkins.security;
 
+import org.gravity.security.annotations.requirements.Integrity;
 import org.jenkinsci.remoting.Role;
 
 /**
@@ -18,6 +19,7 @@ public class Roles {
     /**
      * Indicates that a callable runs on masters, requested by agents/CLI/maven/whatever.
      */
+	@Integrity
     public static final Role MASTER = new Role("master");
 
     /**
@@ -28,6 +30,7 @@ public class Roles {
      * the master (as opposed to ones that do not have that information, which gets
      * {@link Role#UNKNOWN})
      */
+	@Integrity
     public static final Role SLAVE = new Role("slave");
 
     private Roles() {}

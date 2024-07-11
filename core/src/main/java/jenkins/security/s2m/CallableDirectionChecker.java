@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 import jenkins.security.ChannelConfigurator;
 import jenkins.security.Roles;
 import jenkins.util.SystemProperties;
+
+import org.gravity.security.annotations.requirements.Critical;
 import org.jenkinsci.remoting.Role;
 import org.jenkinsci.remoting.RoleChecker;
 import org.jenkinsci.remoting.RoleSensitive;

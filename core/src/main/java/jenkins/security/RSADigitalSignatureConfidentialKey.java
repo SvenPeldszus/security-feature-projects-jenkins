@@ -30,6 +30,11 @@ import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Base64;
 
+import org.gravity.security.annotations.requirements.*;
+
+@Critical(secrecy={"sign(String):String",  "RSAConfidentialKey.getPrivateKey():RSAPrivateKey"}, 
+integrity={"sign(String):String",  "RSAConfidentialKey.getPrivateKey():RSAPrivateKey"})
+
 /**
  * RSA digital signature as {@link ConfidentialKey} to prevent accidental leak of private key.
  *

@@ -69,6 +69,8 @@ import jenkins.model.Jenkins;
 import jenkins.security.stapler.StaplerAccessibleType;
 import jenkins.util.JenkinsJVM;
 import jenkins.util.SystemProperties;
+
+import org.gravity.security.annotations.requirements.Critical;
 import org.jenkinsci.Symbol;
 import org.jvnet.robust_http_client.RetryableHttpStream;
 import org.kohsuke.accmod.Restricted;
@@ -77,6 +79,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.interceptor.RequirePOST;
+
+@Critical(secrecy={"Secret.getEncryptedValue():String"}, integrity={"Secret.getEncryptedValue():String"})
 
 /**
  * HTTP proxy configuration.

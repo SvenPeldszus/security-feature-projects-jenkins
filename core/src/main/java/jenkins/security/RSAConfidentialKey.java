@@ -39,7 +39,7 @@ import java.security.spec.RSAPublicKeySpec;
 import java.util.Base64;
 import org.gravity.security.annotations.requirements.*;
 
-@Critical(secrecy={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey","RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey"},
+@Critical(secrecy={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey","RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey","ConfidentialKey.load():byte[]"},
 		  integrity= {"RSAConfidentialKey.getPrivateKey():RSAPrivateKey", "RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey"})
 
 //&begin[feat_RSAKey]
@@ -78,6 +78,7 @@ public abstract class RSAConfidentialKey extends ConfidentialKey {
      * @throws Error
      *      If key cannot be loaded for some reasons, we fail.
      */
+    @Secrecy
     protected synchronized RSAPrivateKey getPrivateKey() {
         try {
             ConfidentialStore cs = ConfidentialStore.get();

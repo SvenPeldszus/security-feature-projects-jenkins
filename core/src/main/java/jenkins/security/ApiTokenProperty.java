@@ -57,6 +57,8 @@ import jenkins.util.SystemProperties;
 import net.jcip.annotations.Immutable;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import org.gravity.security.annotations.requirements.*;
 import org.jenkinsci.Symbol;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.Beta;
@@ -68,6 +70,8 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
+
+@Critical(secrecy={"ApiTokenProperty.generateNewToken(String):TokenUuidAndPlainValue"})
 
 /**
  * Remembers the API token for this user, that can be used like a password to login.
@@ -367,6 +371,7 @@ public class ApiTokenProperty extends UserProperty {
         return tokenUuid;
     }
 
+    @Secrecy
     // essentially meant for scripting
     @Restricted(Beta.class)
     public @NonNull TokenUuidAndPlainValue generateNewToken(@NonNull String name) throws IOException {

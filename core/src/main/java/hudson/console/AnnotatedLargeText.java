@@ -50,6 +50,7 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import jenkins.model.Jenkins;
 import jenkins.security.CryptoConfidentialKey;
+import org.gravity.security.annotations.requirements.*;
 import org.jenkinsci.remoting.util.AnonymousClassWarnings;
 import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
@@ -74,6 +75,9 @@ import org.kohsuke.stapler.framework.io.LargeText;
  * @author Kohsuke Kawaguchi
  * @since 1.349
  */
+
+@Critical(secrecy= {"CryptoConfidentialKey.decrypt():Cipher"})
+
 public class AnnotatedLargeText<T> extends LargeText {
     /**
      * Can be null.
@@ -116,6 +120,7 @@ public class AnnotatedLargeText<T> extends LargeText {
         rsp.setContentType(isHtml() ? "text/html;charset=UTF-8" : "text/plain;charset=UTF-8");
     }
 
+    
     private ConsoleAnnotator<T> createAnnotator(StaplerRequest req) throws IOException {
         try {
             String base64 = req != null ? req.getHeader("X-ConsoleAnnotator") : null;

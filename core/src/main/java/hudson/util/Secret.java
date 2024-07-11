@@ -53,7 +53,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.Stapler;
 
 @Critical(secrecy= {"Secret.getEncryptedValue():String", "Secret.Secret(String)", "Secret.Secret(String,byte[])","Secret.hashCode():int"},
-		  integrity= {"Secret.getEncryptedValue():String","Secret.decrypt(String):Secret"}) 
+		  integrity= {"Secret.getEncryptedValue():String","Secret.decrypt(String):Secret"})
 // &begin[feat_Secret]
 
 /**
@@ -306,6 +306,7 @@ public final class Secret implements Serializable {
     /**
      * The key that encrypts the data on disk.
      */
+    @Secrecy @Integrity
     private static final CryptoConfidentialKey KEY = new CryptoConfidentialKey(Secret.class.getName());
 
     private static final long serialVersionUID = 1L;

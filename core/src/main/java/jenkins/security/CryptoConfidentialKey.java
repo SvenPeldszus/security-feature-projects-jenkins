@@ -28,7 +28,7 @@ public class CryptoConfidentialKey extends ConfidentialKey {
     public static final int DEFAULT_IV_LENGTH = 16;
 
     private ConfidentialStore lastCS;
-    @Secrecy
+    @Secrecy @Integrity
     private SecretKey secret;
 
     public CryptoConfidentialKey(String id) {
@@ -95,7 +95,7 @@ public class CryptoConfidentialKey extends ConfidentialKey {
      * @param iv the initialization vector
      * @return the cipher
      */
-    @Restricted(NoExternalUse.class) // TODO pending ApI
+    @Restricted(NoExternalUse.class) @Secrecy// TODO pending ApI
     public Cipher decrypt(byte[] iv) {
         try {
             Cipher cipher = Secret.getCipher(ALGORITHM);
@@ -132,7 +132,7 @@ public class CryptoConfidentialKey extends ConfidentialKey {
      * Returns a {@link Cipher} object for decrypting with this key.
      * @deprecated use {@link #decrypt(byte[])}
      */
-    @Deprecated
+    @Deprecated @Secrecy
     public Cipher decrypt() {
         try {
             Cipher cipher = Secret.getCipher(KEY_ALGORITHM);

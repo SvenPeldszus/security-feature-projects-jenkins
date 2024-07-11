@@ -26,8 +26,11 @@ package jenkins.security;
 
 import static org.junit.Assert.assertEquals;
 
+import org.gravity.security.annotations.requirements.*;
 import org.junit.Rule;
 import org.junit.Test;
+
+@Critical(integrity={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey"}, secrecy={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey"})
 
 public class RSAConfidentialKeyTest {
 
