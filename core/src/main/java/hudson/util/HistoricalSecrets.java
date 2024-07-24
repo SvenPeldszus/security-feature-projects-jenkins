@@ -42,6 +42,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 /**
  * Historical algorithms for decrypting {@link Secret}s.
  */
+// &begin[feat_HistoricalSecret]
 @Restricted(NoExternalUse.class)
 public class HistoricalSecrets {
 
@@ -52,11 +53,11 @@ public class HistoricalSecrets {
         } catch (IllegalArgumentException ex) {
             throw new IOException("Could not decode secret", ex);
         }
-        Secret s = tryDecrypt(key.decrypt(), in);
+        Secret s = tryDecrypt(key.decrypt(), in); // &line[use_Secret]
         if (s != null)    return s;
 
         // try our historical key for backward compatibility
-        Cipher cipher = Secret.getCipher("AES");
+        Cipher cipher = Secret.getCipher("AES"); // &line[use_Cipher]
         cipher.init(Cipher.DECRYPT_MODE, getLegacyKey());
         return tryDecrypt(cipher, in);
     }
@@ -65,7 +66,7 @@ public class HistoricalSecrets {
         try {
             String plainText = new String(cipher.doFinal(in), UTF_8);
             if (plainText.endsWith(MAGIC))
-                return new Secret(plainText.substring(0, plainText.length() - MAGIC.length()));
+                return new Secret(plainText.substring(0, plainText.length() - MAGIC.length())); // &line[use_Secret]
             return null;
         } catch (GeneralSecurityException e) {
             return null; // if the key doesn't match with the bytes, it can result in BadPaddingException
@@ -94,3 +95,4 @@ public class HistoricalSecrets {
 
     static final String MAGIC = "::::MAGIC::::";
 }
+// &end[feat_HistoricalSecret]

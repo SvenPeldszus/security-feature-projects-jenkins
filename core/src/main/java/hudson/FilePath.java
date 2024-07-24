@@ -212,6 +212,7 @@ import org.kohsuke.stapler.Stapler;
  * @author Kohsuke Kawaguchi
  * @see VirtualFile
  */
+// &begin[feat_FilePath]
 public final class FilePath implements SerializableOnlyOverRemoting {
 
     public enum DisplayOption implements OpenOption, CopyOption {
@@ -3509,7 +3510,7 @@ public final class FilePath implements SerializableOnlyOverRemoting {
     }
 
     private static void checkPermissionForValidate() {
-        AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
+        AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class); // &line[use_AccessControlled]
         if (subject == null)
             Jenkins.get().checkPermission(Jenkins.MANAGE);
         else
@@ -3916,3 +3917,4 @@ public final class FilePath implements SerializableOnlyOverRemoting {
 
     }
 }
+// &end[feat_FilePath]

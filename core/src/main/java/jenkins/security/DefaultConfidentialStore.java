@@ -29,6 +29,7 @@ import jenkins.model.Jenkins;
  * @author Kohsuke Kawaguchi
  */
 // @MetaInfServices --- not annotated because this is the fallback implementation
+// &begin[feat_DefaultConfidentialStore]
 public class DefaultConfidentialStore extends ConfidentialStore {
     private final SecureRandom sr = new SecureRandom();
 
@@ -44,7 +45,7 @@ public class DefaultConfidentialStore extends ConfidentialStore {
      * Because leaking this master key compromises all the individual keys, we must not let
      * this master key used for any other purpose, hence the protected access.
      */
-    private final SecretKey masterKey;
+    private final SecretKey masterKey; // &line[use_JavaxSecretKey]
 
     public DefaultConfidentialStore() throws IOException, InterruptedException {
         this(new File(Jenkins.get().getRootDir(), "secrets"));
@@ -73,7 +74,7 @@ public class DefaultConfidentialStore extends ConfidentialStore {
     @Override
     protected void store(ConfidentialKey key, byte[] payload) throws IOException {
         try {
-            Cipher sym = Secret.getCipher("AES");
+            Cipher sym = Secret.getCipher("AES"); // &line[use_JavaxCipher]
             sym.init(Cipher.ENCRYPT_MODE, masterKey);
             try (OutputStream fos = Files.newOutputStream(getFileFor(key).toPath());
                  CipherOutputStream cos = new CipherOutputStream(fos, sym)) {
@@ -153,3 +154,4 @@ public class DefaultConfidentialStore extends ConfidentialStore {
 
     private static final byte[] MAGIC = "::::MAGIC::::".getBytes(StandardCharsets.US_ASCII);
 }
+// &end[feat_DefaultConfidentialStore]

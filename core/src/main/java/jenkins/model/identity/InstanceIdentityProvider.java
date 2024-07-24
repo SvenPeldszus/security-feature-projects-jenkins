@@ -40,8 +40,13 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.gravity.security.annotations.requirements.*;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
+
+@Critical(secrecy= {"InstanceIdentityProvider.getPublicKey():PublicKey"}, 
+		  integrity= {"InstanceIdentityProvider.getPublicKey():PublicKey", "InstanceIdentityProvider.getKeyPair():KeyPair"})
 
 /**
  * A source of instance identity.
@@ -61,7 +66,7 @@ public abstract class InstanceIdentityProvider<PUB extends PublicKey, PRIV exten
     /**
      * RSA keys.
      */
-    @Restricted(NoExternalUse.class)
+    @Restricted(NoExternalUse.class) @Secrecy @Integrity
     public static final KeyTypes<RSAPublicKey, RSAPrivateKey> RSA =
             new KeyTypes<>(RSAPublicKey.class, RSAPrivateKey.class);
     /**
@@ -69,7 +74,7 @@ public abstract class InstanceIdentityProvider<PUB extends PublicKey, PRIV exten
      * @deprecated unused
      */
     @Restricted(NoExternalUse.class)
-    @Deprecated
+    @Deprecated @Secrecy @Integrity
     public static final KeyTypes<DSAPublicKey, DSAPrivateKey> DSA =
             new KeyTypes<>(DSAPublicKey.class, DSAPrivateKey.class);
     /**
@@ -77,7 +82,7 @@ public abstract class InstanceIdentityProvider<PUB extends PublicKey, PRIV exten
      * @deprecated unused
      */
     @Restricted(NoExternalUse.class)
-    @Deprecated
+    @Deprecated @Secrecy @Integrity
     public static final KeyTypes<ECPublicKey, ECPrivateKey> EC =
             new KeyTypes<>(ECPublicKey.class, ECPrivateKey.class);
 
@@ -89,7 +94,7 @@ public abstract class InstanceIdentityProvider<PUB extends PublicKey, PRIV exten
      * is not permitted at the required length by the JCA policy.
      * More commonly it just means that the {@code instance-identity} plugin needs to be installed.
      */
-    @CheckForNull
+    @CheckForNull @Secrecy @Integrity
     protected abstract KeyPair getKeyPair();
 
     /**
@@ -98,7 +103,7 @@ public abstract class InstanceIdentityProvider<PUB extends PublicKey, PRIV exten
      * @return the public key. {@code null} if {@link #getKeyPair()} is {@code null}.
      */
     @SuppressWarnings("unchecked")
-    @CheckForNull
+    @CheckForNull @Secrecy  @Integrity
     protected PUB getPublicKey() {
         KeyPair keyPair = getKeyPair();
         return keyPair == null ? null : (PUB) keyPair.getPublic();
@@ -110,7 +115,7 @@ public abstract class InstanceIdentityProvider<PUB extends PublicKey, PRIV exten
      * @return the private key. {@code null} if {@link #getKeyPair()} is {@code null}.
      */
     @SuppressWarnings("unchecked")
-    @CheckForNull
+    @CheckForNull @Secrecy @Integrity
     protected PRIV getPrivateKey() {
         KeyPair keyPair = getKeyPair();
         return keyPair == null ? null : (PRIV) keyPair.getPrivate();

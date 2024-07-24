@@ -34,13 +34,14 @@ import org.springframework.security.core.Authentication;
  *
  * @since 1.220
  */
+// &begin[feat_Access_Controlled]
 public interface AccessControlled {
     /**
      * Obtains the ACL associated with this object.
      *
      * @return never null.
      */
-    @NonNull ACL getACL();
+    @NonNull ACL getACL(); // &line[use_ACL]
 
     /**
      * Convenient short-cut for {@code getACL().checkPermission(permission)}
@@ -103,3 +104,4 @@ public interface AccessControlled {
     }
 
 }
+//&begin[feat_Access_Controlled]

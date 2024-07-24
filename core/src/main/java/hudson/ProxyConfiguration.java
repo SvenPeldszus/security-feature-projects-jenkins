@@ -71,6 +71,8 @@ import jenkins.util.JenkinsJVM;
 import jenkins.util.SystemProperties;
 
 import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.jenkinsci.Symbol;
 import org.jvnet.robust_http_client.RetryableHttpStream;
 import org.kohsuke.accmod.Restricted;
@@ -80,7 +82,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
-@Critical(secrecy={"Secret.getEncryptedValue():String"}, integrity={"Secret.getEncryptedValue():String"})
+@Critical(secrecy={"Secret.getEncryptedValue():String", "secretPassword:Secret"}, integrity={"Secret.getEncryptedValue():String", "ProxyConfiguration.secretPassword:Secret"})
 
 /**
  * HTTP proxy configuration.
@@ -96,6 +98,7 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
  *
  * @see jenkins.model.Jenkins#proxy
  */
+// &begin[feat_ProxyConfiguration]
 @StaplerAccessibleType
 public final class ProxyConfiguration extends AbstractDescribableImpl<ProxyConfiguration> implements Saveable, Serializable {
     /**
@@ -126,7 +129,8 @@ public final class ProxyConfiguration extends AbstractDescribableImpl<ProxyConfi
     /**
      * encrypted password
      */
-    private Secret secretPassword;
+    @Secrecy @Integrity
+    private Secret secretPassword; // &line[use_Secret]
 
     private String testUrl;
 
@@ -620,3 +624,5 @@ public final class ProxyConfiguration extends AbstractDescribableImpl<ProxyConfi
         }
     }
 }
+
+// &end[feat_ProxyConfiguration]

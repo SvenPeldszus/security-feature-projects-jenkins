@@ -15,6 +15,7 @@ import org.jenkinsci.remoting.Role;
  * @author Kohsuke Kawaguchi
  * @since 1.587 / 1.580.1
  */
+// &begin[feat_Roles]
 public class Roles {
     /**
      * Indicates that a callable runs on masters, requested by agents/CLI/maven/whatever.
@@ -35,3 +36,4 @@ public class Roles {
 
     private Roles() {}
 }
+// &end[feat_Roles]

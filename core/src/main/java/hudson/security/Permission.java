@@ -34,7 +34,14 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import jenkins.model.Jenkins;
 import net.sf.json.util.JSONUtils;
+
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.jvnet.localizer.Localizable;
+
+@Critical(integrity={"Permission.id:String", "Permission.id:String", "Permission.owner:Class"})
+
 
 /**
  * Permission, which represents activity that requires a security privilege.
@@ -45,6 +52,7 @@ import org.jvnet.localizer.Localizable;
  * @author Kohsuke Kawaguchi
  * @see <a href="https://www.jenkins.io/doc/developer/security/">Security</a>
  */
+// &begin[feat_Permission]
 public final class Permission {
 
     /**
@@ -52,11 +60,14 @@ public final class Permission {
      */
     public static final Comparator<Permission> ID_COMPARATOR = Comparator.comparing(Permission::getId);
 
+    @Integrity
     public final @NonNull Class owner;
 
+    @Integrity
     public final @NonNull PermissionGroup group;
 
     // if some plugin serialized old version of this class using XStream, `id` can be null
+    @Integrity
     private final @CheckForNull String id;
 
     /**
@@ -93,6 +104,7 @@ public final class Permission {
      * such broad permission bundle is good enough, and those few
      * that need finer control can do so.
      */
+    @Integrity
     public final @CheckForNull Permission impliedBy;
 
     /**
@@ -355,3 +367,4 @@ public final class Permission {
      */
     public static final Permission CONFIGURE = new Permission(GROUP, "GenericConfigure", null, UPDATE);
 }
+// &end[feat_Permission]

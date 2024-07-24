@@ -307,7 +307,7 @@ public final class Secret implements Serializable {
      * The key that encrypts the data on disk.
      */
     @Secrecy @Integrity
-    private static final CryptoConfidentialKey KEY = new CryptoConfidentialKey(Secret.class.getName());
+    private static final CryptoConfidentialKey KEY = new CryptoConfidentialKey(Secret.class.getName()); // &line[use_CryptoKey]
 
     private static final long serialVersionUID = 1L;
 

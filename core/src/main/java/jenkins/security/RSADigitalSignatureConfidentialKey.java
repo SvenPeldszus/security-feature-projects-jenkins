@@ -33,13 +33,14 @@ import java.util.Base64;
 import org.gravity.security.annotations.requirements.*;
 
 @Critical(secrecy={"sign(String):String",  "RSAConfidentialKey.getPrivateKey():RSAPrivateKey"}, 
-integrity={"sign(String):String",  "RSAConfidentialKey.getPrivateKey():RSAPrivateKey"})
+integrity={"RSADigitalSignatureConfidentialKey.sign(String):String",  "RSAConfidentialKey.getPrivateKey():RSAPrivateKey"})
 
 /**
  * RSA digital signature as {@link ConfidentialKey} to prevent accidental leak of private key.
  *
  * @author Kohsuke Kawaguchi
  */
+// &begin[feat_RSADigitalSignatureConfKey]
 public class RSADigitalSignatureConfidentialKey extends RSAConfidentialKey {
     public RSADigitalSignatureConfidentialKey(String id) {
         super(id);
@@ -66,3 +67,4 @@ public class RSADigitalSignatureConfidentialKey extends RSAConfidentialKey {
 
     static final String SIGNING_ALGORITHM = "SHA256";
 }
+// &end[feat_RSADigitalSignatureConfKey]

@@ -49,7 +49,7 @@ public class HexStringConfidentialKey extends ConfidentialKey {
      *      of the caller.
      */
     public synchronized String get() {
-        ConfidentialStore cs = ConfidentialStore.get();
+        ConfidentialStore cs = ConfidentialStore.get(); // &line[use_ConifdentialStore]
         if (secret == null || cs != lastCS) {
             lastCS = cs;
             try {

@@ -94,7 +94,7 @@ public abstract class ConfidentialStore {
 
             if (cs == null)
                 try {
-                    cs = new DefaultConfidentialStore();
+                    cs = new DefaultConfidentialStore(); // &line[use_DefaultConfStore]
                 } catch (Exception e) {
                     // if it's still null, bail out
                     throw new Error(e);

@@ -53,6 +53,7 @@ import jenkins.model.Jenkins;
  * @author Kohsuke Kawaguchi
  * @since 1.421
  */
+// &begin[feat_PermissionScope]
 public final class PermissionScope {
     /**
      * Domain model type that approximates this scope.
@@ -115,3 +116,4 @@ public final class PermissionScope {
      */
     public static final PermissionScope COMPUTER = new PermissionScope(Computer.class, JENKINS);
 }
+// &end[feat_PermissionScope]

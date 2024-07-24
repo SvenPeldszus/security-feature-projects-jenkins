@@ -5,7 +5,11 @@ import hudson.remoting.VirtualChannel;
 import java.io.File;
 import jenkins.security.Roles;
 import jenkins.slaves.RemotingVersionInfo;
+
+import org.gravity.security.annotations.requirements.Critical;
 import org.jenkinsci.remoting.RoleChecker;
+
+@Critical(integrity= {"Roles.SLAVE:Role"})
 
 /**
  * {@link FileCallable}s that are meant to be only used on the master.

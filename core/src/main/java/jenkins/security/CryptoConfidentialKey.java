@@ -16,7 +16,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 		  integrity={"Secret.getEncryptedValue():String","encrypt():Cipher", "decrypt(byte[]):Cipher", "KEY_ALGORITHM:String", "CryptoConfidentialKey.newIv():byte[]",
 				     "CryptoConfidentialKey.getKey():SecretKey", "DEFAULT_IV_LENGTH:int"})
 
-// &begin[feat_CryptoKey]
+// &begin[feat_CryptoConfKey]
 /**
  * {@link ConfidentialKey} that stores a {@link SecretKey} for shared-secret cryptography (AES).
  *
@@ -149,4 +149,4 @@ public class CryptoConfidentialKey extends ConfidentialKey {
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
 
 }
-// &end[feat_CryptoKey]
+// &end[feat_CryptoConfKey]

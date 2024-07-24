@@ -78,7 +78,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-@Critical(secrecy={"SetupWizard.createInitialApiToken(User):void"}) 
+@Critical(secrecy={"SetupWizard.createInitialApiToken(User):void"})
 
 /**
  * A Jenkins instance used during first-run to provide a limited set of services while
@@ -86,6 +86,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  *
  * @since 2.0
  */
+// &begin[cat_SetupWizard]
 @Restricted(NoExternalUse.class)
 @Extension
 public class SetupWizard extends PageDecorator {
@@ -220,7 +221,7 @@ public class SetupWizard extends PageDecorator {
 
         String sysProp = ADMIN_INITIAL_API_TOKEN;
         if (sysProp.equals("true")) {
-            TokenUuidAndPlainValue tokenUuidAndPlainValue = apiTokenProperty.generateNewToken("random-generation-during-setup-wizard");
+            TokenUuidAndPlainValue tokenUuidAndPlainValue = apiTokenProperty.generateNewToken("random-generation-during-setup-wizard"); // &line[use_ApiTokenStore]
             FilePath fp = getInitialAdminApiTokenFile();
             // same comment as in the init method
 
@@ -803,3 +804,4 @@ public class SetupWizard extends PageDecorator {
         }
     }
 }
+//&begin[cat_SetupWizard]

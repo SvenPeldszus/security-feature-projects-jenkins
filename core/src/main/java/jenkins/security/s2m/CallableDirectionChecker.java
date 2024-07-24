@@ -26,6 +26,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
  * @author Kohsuke Kawaguchi
  * @since 1.587 / 1.580.1
  */
+// &begin[feat_CallableDirectionChecker]
 @Restricted(NoExternalUse.class) // used implicitly via listener
 public class CallableDirectionChecker extends RoleChecker {
 
@@ -43,7 +44,7 @@ public class CallableDirectionChecker extends RoleChecker {
     @Override
     public void check(RoleSensitive subject, @NonNull Collection<Role> expected) throws SecurityException {
         final String name = subject.getClass().getName();
-
+        // &begin[use_Roles]
         if (expected.contains(Roles.MASTER)) {
             LOGGER.log(Level.FINE, "Executing {0} is allowed since it is targeted for the controller role", name);
             return;    // known to be safe
@@ -53,6 +54,7 @@ public class CallableDirectionChecker extends RoleChecker {
             LOGGER.log(Level.FINE, "Allowing {0} to be sent from agent to controller because bypass is set", name);
             return;
         }
+        // &end[use_Roles]
 
         throw new SecurityException("Sending " + name + " from agent to controller is prohibited.\nSee https://www.jenkins.io/redirect/security-144 for more details");
     }
@@ -77,3 +79,4 @@ public class CallableDirectionChecker extends RoleChecker {
 
     private static final Logger LOGGER = Logger.getLogger(CallableDirectionChecker.class.getName());
 }
+// &end[feat_CallableDirectionChecker]

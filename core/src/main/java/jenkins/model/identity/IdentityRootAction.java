@@ -7,6 +7,8 @@ import hudson.model.UnprotectedRootAction;
 import java.nio.charset.StandardCharsets;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
+
+import org.gravity.security.annotations.requirements.Integrity;
 import org.jenkinsci.remoting.util.KeyUtils;
 
 /**
@@ -39,7 +41,7 @@ public class IdentityRootAction implements UnprotectedRootAction {
      * @return the PEM encoded public key.
      *         Null if the {@code instance-identity} plugin is not enabled.
      */
-    @CheckForNull
+    @CheckForNull @Integrity
     public String getPublicKey() {
         RSAPublicKey key = InstanceIdentityProvider.RSA.getPublicKey();
         if (key == null) {
@@ -64,7 +66,7 @@ public class IdentityRootAction implements UnprotectedRootAction {
      *
      * @return the fingerprint of the public key.
      */
-    @NonNull
+    @NonNull @Integrity
     public String getFingerprint() {
         return KeyUtils.fingerprint(InstanceIdentityProvider.RSA.getPublicKey());
     }

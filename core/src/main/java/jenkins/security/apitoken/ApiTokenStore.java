@@ -61,6 +61,7 @@ import org.kohsuke.accmod.restrictions.NoExternalUse;
 		"ApiTokenStore.generateNewToken(String):TokenUuidAndPlainValue" }, integrity = {
 				"ApiTokenStore.tokenList:List<HashedToken>" })
 
+// &begin[feat_ApiTokenStore]
 @Restricted(NoExternalUse.class)
 public class ApiTokenStore {
 	private static final Logger LOGGER = Logger.getLogger(ApiTokenStore.class.getName());
@@ -387,6 +388,7 @@ public class ApiTokenStore {
 		}
 	}
 
+	// &begin[feat_HashedToken]
 	public static class HashedToken implements Serializable {
 
 		private static final long serialVersionUID = 1L;
@@ -490,4 +492,6 @@ public class ApiTokenStore {
 			this.name = name;
 		}
 	}
+	// &end[feat_HashedToken]
 }
+// &end[feat_ApiTokenStore]

@@ -113,7 +113,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *
  * @author Kohsuke Kawaguchi
  */
-public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRealm implements ModelObject, AccessControlled {
+// &begin[feat_HudsonPrivateSecurityRealm]
+
+public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRealm implements ModelObject, AccessControlled { // &line[use_AccessControlled]
     private static final int FIPS_PASSWORD_LENGTH = 14;
     private static /* not final */ String ID_REGEX = System.getProperty(HudsonPrivateSecurityRealm.class.getName() + ".ID_REGEX");
 
@@ -1181,3 +1183,4 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
 
     private static final Logger LOGGER = Logger.getLogger(HudsonPrivateSecurityRealm.class.getName());
 }
+// &end[feat_HudsonPrivateSecurityRealm]

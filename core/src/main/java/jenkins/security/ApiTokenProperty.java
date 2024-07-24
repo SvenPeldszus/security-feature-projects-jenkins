@@ -509,6 +509,7 @@ public class ApiTokenProperty extends UserProperty {
                     : Messages.ApiTokenProperty_ChangeToken_SuccessHidden());
         }
 
+        // &begin[cat_GenerateNewTokenAPIRequest]
         @RequirePOST
         public HttpResponse doGenerateNewToken(@AncestorInPath User u, @QueryParameter String newTokenName) throws IOException {
             if (!hasCurrentUserRightToGenerateNewToken(u)) {
@@ -528,7 +529,7 @@ public class ApiTokenProperty extends UserProperty {
                 u.addProperty(p);
             }
 
-            TokenUuidAndPlainValue tokenUuidAndPlainValue = p.generateNewToken(tokenName);
+            TokenUuidAndPlainValue tokenUuidAndPlainValue = p.generateNewToken(tokenName); // &line[use_TokenUuidAndPlainValue]
 
             Map<String, String> data = new HashMap<>();
             data.put("tokenUuid", tokenUuidAndPlainValue.tokenUuid);
@@ -536,6 +537,7 @@ public class ApiTokenProperty extends UserProperty {
             data.put("tokenValue", tokenUuidAndPlainValue.plainValue);
             return HttpResponses.okJSON(data);
         }
+        // &end[cat_GenerateNewTokenAPIRequest]
 
         /**
          * This method is dangerous and should not be used without caution.

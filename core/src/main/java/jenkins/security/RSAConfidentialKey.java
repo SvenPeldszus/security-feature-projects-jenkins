@@ -42,7 +42,7 @@ import org.gravity.security.annotations.requirements.*;
 @Critical(secrecy={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey","RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey","ConfidentialKey.load():byte[]"},
 		  integrity= {"RSAConfidentialKey.getPrivateKey():RSAPrivateKey", "RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey"})
 
-//&begin[feat_RSAKey]
+//&begin[feat_RSAConfKey]
 /**
  * RSA public/private key pair as {@link ConfidentialKey}.
  *
@@ -119,4 +119,4 @@ public abstract class RSAConfidentialKey extends ConfidentialKey {
         return Base64.getEncoder().encodeToString(getPublicKey().getEncoded());
     }
 }
-// &end[feat_RSAKey]
+// &end[feat_RSAConfKey]

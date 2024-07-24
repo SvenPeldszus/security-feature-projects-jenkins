@@ -44,6 +44,7 @@ import jenkins.security.NonSerializableSecurityContext;
 import jenkins.security.NotReallyRoleSensitiveCallable;
 import org.acegisecurity.acls.sid.PrincipalSid;
 import org.acegisecurity.acls.sid.Sid;
+import org.gravity.security.annotations.requirements.Critical;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.springframework.security.access.AccessDeniedException;
@@ -53,12 +54,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+@Critical(integrity={"ACL.checkAnyPermission(Permission[]):void", "Permission.impliedBy:Permission"})
+
+
 /**
  * Gate-keeper that controls access to Hudson's model objects.
  *
  * @author Kohsuke Kawaguchi
  */
+// &begin[feat_ACL]
 public abstract class ACL {
+	// &begin[use_Permission]
     /**
      * Checks if the current security principal has this permission.
      *
@@ -217,6 +223,8 @@ public abstract class ACL {
             }
         };
     }
+    
+    // &end[use_Permission]
 
     /**
      * Checks if the current security principal has the permission to create top level items within the specified
@@ -536,3 +544,4 @@ public abstract class ACL {
     }
 
 }
+// &end[feat_ACL]

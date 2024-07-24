@@ -2,7 +2,11 @@ package jenkins.security;
 
 import hudson.remoting.Callable;
 import jenkins.slaves.RemotingVersionInfo;
+
+import org.gravity.security.annotations.requirements.Critical;
 import org.jenkinsci.remoting.RoleChecker;
+
+@Critical(integrity= {"Roles.SLAVE:Role"})
 
 /**
  * Convenient {@link Callable} meant to be run on agent.
