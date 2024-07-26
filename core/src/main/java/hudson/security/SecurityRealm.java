@@ -56,6 +56,9 @@ import jenkins.security.AuthenticationSuccessHandler;
 import jenkins.security.BasicHeaderProcessor;
 import jenkins.util.SystemProperties;
 import net.sf.json.JSONObject;
+
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.jenkinsci.Symbol;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.DoNotUse;
@@ -572,6 +575,9 @@ public abstract class SecurityRealm extends AbstractDescribableImpl<SecurityReal
      *
      * @since 1.271
      */
+    @Secrecy
+    @Integrity
+    // &begin[feat_createFilter]
     public Filter createFilter(FilterConfig filterConfig) {
         LOGGER.entering(SecurityRealm.class.getName(), "createFilter");
 
@@ -612,6 +618,7 @@ public abstract class SecurityRealm extends AbstractDescribableImpl<SecurityReal
         filters.addAll(commonFilters());
         return new ChainedServletFilter(filters);
     }
+    // &end[feat_createFilter]
 
     protected final List<Filter> commonFilters() {
         // like Jenkins.ANONYMOUS:
