@@ -117,7 +117,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *
  * @author Kohsuke Kawaguchi
  */
-@Critical(secrecy = {"HudsonPrivateSecurityRealm.createAccount(StaplerRequest,StaplerResponse,boolean,String):User"}, integrity = {"createAccount(StaplerRequest, StaplerResponse, boolean, String):User"})
+@Critical(secrecy = {"HudsonPrivateSecurityRealm.createAccount(StaplerRequest, StaplerResponse, boolean, String):User",
+                     "HudsonPrivateSecurityRealm.loginAndTakeBack(StaplerRequest,StaplerResponse,User):void",
+                     "HudsonPrivateSecurityRealm.tryToMakeAdmin(User):void",
+                     "HudsonPrivateSecurityRealm._doCreateAccount(StaplerRequest,StaplerResponse,String):User"}, 
+          integrity = {})
 public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRealm implements ModelObject, AccessControlled {
     private static final int FIPS_PASSWORD_LENGTH = 14;
     private static /* not final */ String ID_REGEX = System.getProperty(HudsonPrivateSecurityRealm.class.getName() + ".ID_REGEX");
@@ -219,6 +223,8 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
     }
 
     @Override
+    @Secrecy
+    @Integrity
     protected UserDetails authenticate2(String username, String password) throws AuthenticationException {
         Details u;
         try {
@@ -257,6 +263,7 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
      * with {@link #commenceSignup}.
      */
     @RequirePOST
+    @Secrecy
     public User doCreateAccountWithFederatedIdentity(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         User u = _doCreateAccount(req, rsp, "signupWithFederatedIdentity.jelly");
         if (u != null)
@@ -270,12 +277,12 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
      * Creates an user account. Used for self-registration.
      */
     @RequirePOST
+    @Secrecy
     public User doCreateAccount(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         return _doCreateAccount(req, rsp, "signup.jelly");
     }
 
-    // @Secrecy
-    // @Integrity
+    @Secrecy
     private User _doCreateAccount(StaplerRequest req, StaplerResponse rsp, String formView) throws ServletException, IOException {
         if (!allowsSignup())
             throw HttpResponses.errorWithoutStack(SC_UNAUTHORIZED, "User sign up is prohibited");
@@ -375,8 +382,7 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
      * This can be run by anyone, but only to create the very first user account.
      */
     @RequirePOST
-    // @Secrecy
-    // @Integrity
+    @Secrecy
     public void doCreateFirstAccount(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
         if (hasSomeUser()) {
             rsp.sendError(SC_UNAUTHORIZED, "First user was already created");
@@ -392,13 +398,16 @@ public class HudsonPrivateSecurityRealm extends AbstractPasswordBasedSecurityRea
     /**
      * Try to make this user a super-user
      */
+    @Secrecy
     private void tryToMakeAdmin(User u) {
+        // &begin[use_permissionAdd]
         AuthorizationStrategy as = Jenkins.get().getAuthorizationStrategy();
         for (PermissionAdder adder : ExtensionList.lookup(PermissionAdder.class)) {
             if (adder.add(as, u, Jenkins.ADMINISTER)) {
                 return;
             }
         }
+        // &end[use_permissionAdd]
     }
 
     /**
