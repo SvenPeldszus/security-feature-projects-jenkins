@@ -4,6 +4,10 @@ import hudson.Util;
 import jenkins.model.Jenkins;
 import jenkins.security.ImpersonatingUserDetailsService2;
 import jenkins.security.SecurityListener;
+
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.Beta;
 import org.springframework.security.authentication.AnonymousAuthenticationProvider;
@@ -29,6 +33,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  * @author Kohsuke Kawaguchi
  * @since 1.317
  */
+@Critical(secrecy = {"HudsonPrivateSecurityRealm.authenticate2(String,String):UserDetails",
+                     "AbstractPasswordBasedSecurityRealm.doAuthenticate(String,String):UserDetails",
+                     "AbstractPasswordBasedSecurityRealm.authenticateByPassword(String,String):UserDetails",
+                     "AbstractPasswordBasedSecurityRealm.authenticate(String,String):UserDetails",
+                     "AbstractPasswordBasedSecurityRealm.authenticate2(String,String):UserDetails"}, 
+          integrity = {"HudsonPrivateSecurityRealm.authenticate2(String,String):UserDetails",
+                       "AbstractPasswordBasedSecurityRealm.doAuthenticate(String,String):UserDetails",
+                       "AbstractPasswordBasedSecurityRealm.authenticateByPassword(String,String):UserDetails",
+                       "AbstractPasswordBasedSecurityRealm.authenticate(String,String):UserDetails",
+                       "AbstractPasswordBasedSecurityRealm.authenticate2(String,String):UserDetails"})
 public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
     @Override
     public SecurityComponents createSecurityComponents() {
@@ -70,6 +84,9 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
      * attempt.
      * @since 2.266
      */
+    @Secrecy
+    @Integrity
+    // &begin[feat_auth2]
     protected UserDetails authenticate2(String username, String password) throws AuthenticationException {
         if (Util.isOverridden(AbstractPasswordBasedSecurityRealm.class, getClass(), "authenticate", String.class, String.class)) {
             try {
@@ -81,33 +98,46 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
             throw new AbstractMethodError("Implement authenticate2");
         }
     }
+    // &end[feat_auth2]
 
     /**
      * A public alias of @{link {@link #authenticate2(String, String)}.
      * @since 2.444
      */
     @Restricted(Beta.class)
+    @Secrecy
+    @Integrity
     public final UserDetails authenticateByPassword(String username, String password) throws AuthenticationException {
+        // &begin[use_auth2]
         return authenticate2(username, password);
+        // &end[use_auth2]
     }
 
     /**
      * @deprecated use {@link #authenticate2}
      */
     @Deprecated
+    @Secrecy
+    @Integrity
     protected org.acegisecurity.userdetails.UserDetails authenticate(String username, String password) throws org.acegisecurity.AuthenticationException {
         try {
+            // &begin[use_auth2]
             return org.acegisecurity.userdetails.UserDetails.fromSpring(authenticate2(username, password));
+            // &end[use_auth2]
         } catch (AuthenticationException x) {
             throw org.acegisecurity.AuthenticationException.fromSpring(x);
         }
     }
 
+    @Secrecy
+    @Integrity
     private UserDetails doAuthenticate(String username, String password) throws AuthenticationException {
         try {
+            // &begin[use_auth2]
             UserDetails user = authenticate2(username, password);
             SecurityListener.fireAuthenticated2(user);
             return user;
+            // &end[use_auth2]
         } catch (AuthenticationException x) {
             SecurityListener.fireFailedToAuthenticate(username);
             throw x;
@@ -190,9 +220,11 @@ public abstract class AbstractPasswordBasedSecurityRealm extends SecurityRealm {
         }
 
         @Override
+        // &begin[feat_retUser]
         protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
             return doAuthenticate(username, authentication.getCredentials().toString());
         }
+        // &end[feat_retUser]
     }
 
 }
