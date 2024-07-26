@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
 import org.gravity.security.annotations.requirements.Secrecy;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
@@ -26,6 +28,8 @@ import hudson.model.User;
  */
 @Restricted(NoExternalUse.class)
 @Extension
+@Critical(secrecy = { "BasicHeaderApiTokenAuthenticator.authenticate2(HttpServletRequest,HttpServletResponse,String,String):Authentication" }, integrity = {
+        "BasicHeaderRealPasswordAuthenticator.authenticate2(HttpServletRequest,HttpServletResponse,String,String):Authentication" })
 public class BasicHeaderApiTokenAuthenticator extends BasicHeaderAuthenticator {
     /**
      * Note: if the token does not exist or does not match, we do not use
@@ -34,7 +38,7 @@ public class BasicHeaderApiTokenAuthenticator extends BasicHeaderAuthenticator {
      */
     @Override
     @Secrecy
-    // Parameter enthaelt req, username und password
+    @Integrity
     public Authentication authenticate2(HttpServletRequest req, HttpServletResponse rsp, String username, String password) throws ServletException {
         User u = BasicApiTokenHelper.isConnectingUsingApiToken(username, password);
         if (u != null) {

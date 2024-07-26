@@ -3,14 +3,11 @@ package jenkins.security;
 import static java.util.logging.Level.FINE;
 import static java.util.logging.Level.FINER;
 
-import hudson.security.ACL;
-import hudson.security.ACLContext;
-import hudson.security.SecurityRealm;
-import hudson.util.Scrambler;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -19,6 +16,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.kohsuke.accmod.Restricted;
 import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -29,6 +30,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.NullRememberMeServices;
 import org.springframework.security.web.authentication.RememberMeServices;
+
+import hudson.security.ACL;
+import hudson.security.ACLContext;
+import hudson.security.SecurityRealm;
+import hudson.util.Scrambler;
 
 /**
  * Takes "username:password" given in the {@code Authorization} HTTP header and authenticates
@@ -43,6 +49,10 @@ import org.springframework.security.web.authentication.RememberMeServices;
  * @author Kohsuke Kawaguchi
  */
 @Restricted(NoExternalUse.class)
+@Critical(secrecy = {"BasicHeaderAuthenticator.authenticate(HttpServletRequest,HttpServletResponse,String,String):Authentication",
+"BasicHeaderAuthenticator.setRememberMeServices(RememberMeServices)"},
+integrity = {"BasicHeaderAuthenticator.authenticate(HttpServletRequest,HttpServletResponse,String,String):Authentication",
+"BasicHeaderAuthenticator.setRememberMeServices(RememberMeServices)"})
 public class BasicHeaderProcessor implements Filter {
     private AuthenticationEntryPoint authenticationEntryPoint;
     private RememberMeServices rememberMeServices = new NullRememberMeServices();
@@ -55,11 +65,16 @@ public class BasicHeaderProcessor implements Filter {
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
+    @Secrecy
+    @Integrity
     public void setRememberMeServices(RememberMeServices rememberMeServices) {
         this.rememberMeServices = rememberMeServices;
     }
 
     @Override
+    @Secrecy
+    @Integrity
+    // &begin[feat_doFilter]
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse rsp = (HttpServletResponse) response;
@@ -73,10 +88,12 @@ public class BasicHeaderProcessor implements Filter {
                 String username = uidpassword.substring(0, idx);
                 String password = uidpassword.substring(idx + 1);
 
+                // &begin[use_chain]
                 if (!authenticationIsRequired(username)) {
                     chain.doFilter(request, response);
                     return;
                 }
+                // &end[use_chain]
 
                 for (BasicHeaderAuthenticator a : all()) {
                     LOGGER.log(FINER, "Attempting to authenticate with {0}", a);
@@ -97,6 +114,7 @@ public class BasicHeaderProcessor implements Filter {
             chain.doFilter(request, response);
         }
     }
+    // &end[feat_doFilter]
 
     /**
      * If the request is already authenticated to the same user that the Authorization header claims,

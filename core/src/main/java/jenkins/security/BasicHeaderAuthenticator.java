@@ -8,6 +8,10 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.springframework.security.core.Authentication;
 
 /**
@@ -18,6 +22,10 @@ import org.springframework.security.core.Authentication;
  * @since 1.576
  * @see BasicHeaderProcessor
  */
+@Critical(secrecy = {"BasicHeaderAuthenticator.authenticate(HttpServletRequest,HttpServletResponse,String,String):Authentication",
+                     "BasicHeaderAuthenticator.authenticate2(HttpServletRequest,HttpServletResponse,String,String):Authentication"}, 
+          integrity = {"BasicHeaderAuthenticator.authenticate(HttpServletRequest,HttpServletResponse,String,String):Authentication",
+                       "BasicHeaderAuthenticator.authenticate2(HttpServletRequest,HttpServletResponse,String,String):Authentication"})
 public abstract class BasicHeaderAuthenticator implements ExtensionPoint {
     /**
      * Given the parsed username and password field from the basic authentication header,
@@ -38,6 +46,9 @@ public abstract class BasicHeaderAuthenticator implements ExtensionPoint {
      * @since 2.266
      */
     @CheckForNull
+    @Secrecy
+    @Integrity
+    // &begin[feat_auth2]
     public Authentication authenticate2(HttpServletRequest req, HttpServletResponse rsp, String username, String password) throws IOException, ServletException {
         if (Util.isOverridden(BasicHeaderAuthenticator.class, getClass(), "authenticate", HttpServletRequest.class, HttpServletResponse.class, String.class, String.class)) {
             org.acegisecurity.Authentication a = authenticate(req, rsp, username, password);
@@ -46,16 +57,21 @@ public abstract class BasicHeaderAuthenticator implements ExtensionPoint {
             throw new AbstractMethodError("implement authenticate2");
         }
     }
+    // &end[feat_auth2]
 
     /**
      * @deprecated use {@link #authenticate2}
      */
     @Deprecated
     @CheckForNull
+    @Secrecy
+    @Integrity
+    // &begin[feat_auth]
     public org.acegisecurity.Authentication authenticate(HttpServletRequest req, HttpServletResponse rsp, String username, String password) throws IOException, ServletException {
         Authentication a = authenticate2(req, rsp, username, password);
         return a != null ? org.acegisecurity.Authentication.fromSpring(a) : null;
     }
+    // &end[feat_auth]
 
     public static ExtensionList<BasicHeaderAuthenticator> all() {
         return ExtensionList.lookup(BasicHeaderAuthenticator.class);

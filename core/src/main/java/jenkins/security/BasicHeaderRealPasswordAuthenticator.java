@@ -50,15 +50,15 @@ import jenkins.util.SystemProperties;
  */
 @Restricted(NoExternalUse.class)
 @Extension
-@Critical(secrecy = { "BasicHeaderRealPasswordAuthenticator.authenticationDetailsSource:AuthenticationDetailsSource" }, integrity = { "authenticationDetailsSource:AuthenticationDetailsSource" })
+@Critical(secrecy= {"BasicHeaderRealPasswordAuthenticator.authenticate2(HttpServletRequest,HttpServletResponse,String,String):Authentication"},
+integrity = {"BasicHeaderRealPasswordAuthenticator.authenticate2(HttpServletRequest,HttpServletResponse,String,String):Authentication"})
 public class BasicHeaderRealPasswordAuthenticator extends BasicHeaderAuthenticator {
-    @Secrecy
-    @Integrity
     private AuthenticationDetailsSource authenticationDetailsSource = new WebAuthenticationDetailsSource();
 
     @Override
     @Secrecy
-    // TODO: Parameter enthaelt req, username und password
+    @Integrity
+    // &begin[feat_auth2]
     public Authentication authenticate2(HttpServletRequest req, HttpServletResponse rsp, String username, String password) throws IOException, ServletException {
         if (DISABLE) {
             return null;
@@ -66,14 +66,12 @@ public class BasicHeaderRealPasswordAuthenticator extends BasicHeaderAuthenticat
 
         UsernamePasswordAuthenticationToken authRequest =
                 new UsernamePasswordAuthenticationToken(username, password);
-        // &begin[use_authDetailsSource]
         authRequest.setDetails(authenticationDetailsSource.buildDetails(req));
-        // &end[use_authDetailsSource]
 
         try {
-            // &begin[use_authDetailsSource]
+            // &begin[use_m2Auth]
             Authentication a = Jenkins.get().getSecurityRealm().getSecurityComponents().manager2.authenticate(authRequest);
-            // &end[use_authDetailsSource]
+            // &end[use_m2Auth]
             // Authentication success
             LOGGER.log(FINER, "Authentication success: {0}", a);
             return a;
@@ -83,6 +81,7 @@ public class BasicHeaderRealPasswordAuthenticator extends BasicHeaderAuthenticat
             return null;
         }
     }
+    // &end[feat_auth2]
 
     private static final Logger LOGGER = Logger.getLogger(BasicHeaderRealPasswordAuthenticator.class.getName());
 
