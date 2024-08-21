@@ -73,6 +73,7 @@ import org.kohsuke.stapler.interceptor.RequirePOST;
 
 @Critical(secrecy={"ApiTokenProperty.generateNewToken(String):TokenUuidAndPlainValue"})
 
+// &begin[feat_ApiTokenProperty]
 /**
  * Remembers the API token for this user, that can be used like a password to login.
  *
@@ -154,7 +155,7 @@ public class ApiTokenProperty extends UserProperty {
      * Users with {@link Jenkins#ADMINISTER} may be allowed to do it using {@link #SHOW_LEGACY_TOKEN_TO_ADMINS}.
      *
      * @return API Token. Never null, but may be {@link Messages#ApiTokenProperty_ChangeToken_TokenIsHidden()}
-     *         if the user has no appropriate permissions.
+     * if the user has no appropriate permissions.
      * @since 1.426, and since 1.638 the method performs security checks
      */
     @NonNull
@@ -179,7 +180,7 @@ public class ApiTokenProperty extends UserProperty {
     @NonNull
     @Restricted(NoExternalUse.class)
     @SuppressFBWarnings(value = "UNSAFE_HASH_EQUALS", justification = "Used to prevent use of pre-2013 API tokens, then returning the API token value")
-    /*package*/ String getApiTokenInsecure() {
+        /*package*/ String getApiTokenInsecure() {
         if (apiToken == null) {
             return Messages.ApiTokenProperty_NoLegacyToken();
         }
@@ -319,6 +320,7 @@ public class ApiTokenProperty extends UserProperty {
 
     /**
      * Only usable if the user still has the legacy API token.
+     *
      * @deprecated Each token can be revoked now and new tokens can be requested without altering existing ones.
      */
     @Deprecated
@@ -429,12 +431,12 @@ public class ApiTokenProperty extends UserProperty {
          * API Token are generated only when a user request a new one. The value is randomly generated
          * without any link to the user and only displayed to him the first time.
          * We only store the hash for future comparisons.
-         *
+         * <p>
          * Legacy approach:
          * When we are creating a default {@link ApiTokenProperty} for User,
          * we need to make sure it yields the same value for the same user,
          * because there's no guarantee that the property is saved.
-         *
+         * <p>
          * But we also need to make sure that an attacker won't be able to guess
          * the initial API token value. So we take the seed by hashing the secret + user ID.
          */
@@ -674,9 +676,11 @@ public class ApiTokenProperty extends UserProperty {
 
     /**
      * We don't want an API key that's too long, so cut the length to 16 (which produces 32-letter MAC code in hexdump)
+     *
      * @deprecated only used for the migration of previous data
      */
     @Deprecated
     @Restricted(NoExternalUse.class)
     public static final HMACConfidentialKey API_KEY_SEED = new HMACConfidentialKey(ApiTokenProperty.class, "seed", 16);
 }
+// &end[feat_ApiTokenProperty]

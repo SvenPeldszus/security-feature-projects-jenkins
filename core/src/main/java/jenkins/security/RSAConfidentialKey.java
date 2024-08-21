@@ -42,7 +42,7 @@ import org.gravity.security.annotations.requirements.*;
 @Critical(secrecy={"RSAConfidentialKey.getPrivateKey():RSAPrivateKey","RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey","ConfidentialKey.load():byte[]"},
 		  integrity= {"RSAConfidentialKey.getPrivateKey():RSAPrivateKey", "RSAConfidentialKey.priv:RSAPrivateKey","RSAConfidentialKey.pub:RSAPublicKey"})
 
-//&begin[feat_RSAConfKey]
+// &begin[feat_RSAConfKey]
 /**
  * RSA public/private key pair as {@link ConfidentialKey}.
  *
@@ -55,7 +55,8 @@ import org.gravity.security.annotations.requirements.*;
 public abstract class RSAConfidentialKey extends ConfidentialKey {
 
     private ConfidentialStore lastCS;
-    @Secrecy @Integrity
+    @Secrecy
+    @Integrity
     private RSAPrivateKey priv;
     @Integrity
     private RSAPublicKey pub;
@@ -75,8 +76,7 @@ public abstract class RSAConfidentialKey extends ConfidentialKey {
      * Instead of exposing private key, define methods that use them in specific way, such as
      * {@link RSADigitalSignatureConfidentialKey}.
      *
-     * @throws Error
-     *      If key cannot be loaded for some reasons, we fail.
+     * @throws Error If key cannot be loaded for some reasons, we fail.
      */
     @Secrecy
     protected synchronized RSAPrivateKey getPrivateKey() {
@@ -120,3 +120,4 @@ public abstract class RSAConfidentialKey extends ConfidentialKey {
     }
 }
 // &end[feat_RSAConfKey]
+

@@ -27,11 +27,13 @@ package hudson.model;
 import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Descriptor.FormException;
+import hudson.search.UserSearchProperty;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.export.ExportedBean;
 
+// &begin[feat_UserProperty]
 /**
  * Extensible property of {@link User}.
  *
@@ -44,7 +46,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * Configuration screen should be defined in {@code config.jelly}.
  * Within this page, the {@link UserProperty} instance is available
  * as {@code instance} variable (while {@code it} refers to {@link User}.
- * See {@link hudson.search.UserSearchProperty}'s {@code config.jelly} for an example.
+ * See {@link UserSearchProperty}'s {@code config.jelly} for an example.
  * <p>A property may also define a {@code summary.jelly} view to show in the main user screen.
  *
  * @author Kohsuke Kawaguchi
@@ -80,3 +82,4 @@ public abstract class UserProperty implements ReconfigurableDescribable<UserProp
         return form == null ? null : getDescriptor().newInstance(req, form);
     }
 }
+// &end[feat_UserProperty]

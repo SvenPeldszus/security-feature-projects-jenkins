@@ -804,4 +804,4 @@ public class SetupWizard extends PageDecorator {
         }
     }
 }
-//&begin[cat_SetupWizard]
+// &end[cat_SetupWizard]
