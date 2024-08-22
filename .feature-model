@@ -1,0 +1,14 @@
+core
+	cat_auth
+		cat_auth_spring
+			feat_auth2
+				use_m2Auth
+			feat_doAuth
+				use_auth2
+			feat_authByPass
+				use_auth2
+		cat_auth_filter
+			feat_auth2
+			feat_doFilter
+				use_chain
+			feat_createFilter
