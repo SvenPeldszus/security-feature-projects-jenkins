@@ -83,6 +83,7 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
+// &begin[feat_SecurityRealm]
 /**
  * Pluggable security realm that connects external user database to Hudson.
  *
@@ -878,3 +879,4 @@ public abstract class SecurityRealm extends AbstractDescribableImpl<SecurityReal
     public static final org.acegisecurity.GrantedAuthority AUTHENTICATED_AUTHORITY = new org.acegisecurity.GrantedAuthorityImpl("authenticated");
 
 }
+// &end[feat_SecurityRealm]

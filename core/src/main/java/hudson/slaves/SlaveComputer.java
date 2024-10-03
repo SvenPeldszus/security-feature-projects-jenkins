@@ -103,6 +103,7 @@ import org.kohsuke.stapler.WebMethod;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
+//&begin [feat_SlaveComputer]
 /**
  * {@link Computer} for {@link Slave}s.
  *
@@ -870,6 +871,7 @@ public class SlaveComputer extends Computer {
         return new Slave.JnlpJar(fileName);
     }
 
+    // &begin[use_EncryptJNLPFile]
     @WebMethod(name = "slave-agent.jnlp") // backward compatibility
     public HttpResponse doSlaveAgentJnlp(StaplerRequest req, StaplerResponse res) {
         return doJenkinsAgentJnlp(req, res);
@@ -897,7 +899,8 @@ public class SlaveComputer extends Computer {
             return SlaveComputer.this.doJenkinsAgentJnlp(req, res);
         }
     }
-
+    // &end[use_EncryptJNLPFile]
+    
     @Override
     @Restricted(NoExternalUse.class)
     public Object getTarget() {
@@ -1193,3 +1196,4 @@ public class SlaveComputer extends Computer {
 
     private static final Logger LOGGER = Logger.getLogger(SlaveComputer.class.getName());
 }
+//&end [feat_SlaveComputer]

@@ -64,6 +64,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 import org.kohsuke.stapler.verb.POST;
 
+// &begin[feat_Cloud]
 /**
  * Creates {@link Node}s to dynamically expand/shrink the agents attached to Hudson.
  *
@@ -149,7 +150,7 @@ public abstract class Cloud extends Actionable implements ExtensionPoint, Descri
 
     @Override
     public ACL getACL() {
-        return Jenkins.get().getAuthorizationStrategy().getACL(this);
+        return Jenkins.get().getAuthorizationStrategy().getACL(this); // &line[use_ACL]
     }
 
     /**
@@ -310,7 +311,7 @@ public abstract class Cloud extends Actionable implements ExtensionPoint, Descri
      */
     @RequirePOST
     public HttpResponse doDoDelete() throws IOException {
-        checkPermission(Jenkins.ADMINISTER);
+        checkPermission(Jenkins.ADMINISTER); // &line[use_AccessControlled]
         Jenkins.get().clouds.remove(this);
         return new HttpRedirect("..");
     }
@@ -320,7 +321,7 @@ public abstract class Cloud extends Actionable implements ExtensionPoint, Descri
      */
     @POST
     public HttpResponse doConfigSubmit(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException, Descriptor.FormException {
-        checkPermission(Jenkins.ADMINISTER);
+        checkPermission(Jenkins.ADMINISTER); // &line[use_AccessControlled]
 
         Jenkins j = Jenkins.get();
         Cloud cloud = j.getCloud(this.name);
@@ -383,3 +384,4 @@ public abstract class Cloud extends Actionable implements ExtensionPoint, Descri
         }
     }
 }
+// &end[feat_Cloud]

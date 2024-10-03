@@ -27,8 +27,12 @@ import jenkins.util.JavaVMArguments;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
+import org.gravity.security.annotations.requirements.*;
 import org.jenkinsci.Symbol;
 
+@Critical(secrecy={"HsErrPidList.HsErrPidList()", "HsErrPidList.scanFile(File):void"}, integrity={"HsErrPidList.HsErrPidList()", "HsErrPidList.scanFile(File):void"})
+
+// &begin[feat_HsErrPidList]
 /**
  * Finds crash dump reports and show them in the UI.
  *
@@ -148,8 +152,9 @@ public class HsErrPidList extends AdministrativeMonitor {
         }
     }
 
+    @Secrecy @Integrity
     private File getSecretKeyFile() {
-        return new File(Jenkins.get().getRootDir(), "secret.key");
+        return new File(Jenkins.get().getRootDir(), "secret.key"); // &line[use_SecretKeyFile]
     }
 
     private boolean findHeader(BufferedReader r) throws IOException {
@@ -171,3 +176,4 @@ public class HsErrPidList extends AdministrativeMonitor {
     private static final String ERROR_FILE_OPTION = "-XX:ErrorFile=";
     private static final Logger LOGGER = Logger.getLogger(HsErrPidList.class.getName());
 }
+// &end[feat_HsErrPidList]

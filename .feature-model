@@ -31,6 +31,9 @@ Core
                 feat_PermissionGroup
                 feat_CallableDirectionChecker
                         use_Roles
+                feat_AuthorizationStrategy
+                    use_ACL
+                feat_SecurityRealm
             cat_Token
                 feat_UserProperty
                 feat_ApiTokenProperty
@@ -44,5 +47,33 @@ Core
             use_Secret
         feat_FilePath
             use_AccessControlled
+        feat_Jenkins
+            use_AuthorizationStrategy
+            use_SecurityRealm
+            use_SetupWizard
         cat_SetupWizard
             use_ApiTokenStore
+        cat_Slaves
+            feat_EncryptJNLPFile
+                use_SecureRandom
+                use_AccessControlled
+                use_SecretKey
+                use_Cipher
+                use_Permission
+            feat_SlaveComputer
+                use_EncryptJNLPFile
+            feat_Cloud
+                use_ACL
+                use_AccessControlled
+        cat_XML
+            feat_SecretRewriter
+                use_Cipher
+                use_SecretKey
+                use_Secret
+                use_HistoricalSecrets
+        cat_Diagnosis
+            feat_HsErrPidList
+                use_SecretKeyFile
+        cat_Util
+            feat_Scrambler
+                use_Secret

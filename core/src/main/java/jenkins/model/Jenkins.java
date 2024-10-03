@@ -296,6 +296,9 @@ import net.sf.json.JSONObject;
 import org.apache.commons.jelly.JellyException;
 import org.apache.commons.jelly.Script;
 import org.apache.commons.logging.LogFactory;
+import org.gravity.security.annotations.requirements.Critical;
+import org.gravity.security.annotations.requirements.Integrity;
+import org.gravity.security.annotations.requirements.Secrecy;
 import org.jvnet.hudson.reactor.Executable;
 import org.jvnet.hudson.reactor.Milestone;
 import org.jvnet.hudson.reactor.Reactor;
@@ -336,6 +339,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.xml.sax.InputSource;
 
+@Critical(integrity= {"disableSecurity():void", "getACL():ACL", "getAuthorizationStrategy():AuthorizationStrategy", "isUseSecurity():boolean", "run(Reactor):void", 
+					  "setAuthorizationStrategy(AuthorizationStrategy):void", "disableSecurity():void", "setSecurityRealm(SecurityRealm):void", "doLogout(StaplerRequest, StaplerResponse):void",
+					  "getSecurity():SecurityMode", "load():void", "resetFilter(SecurityRealm, IdStrategy):void", "getSecurityRealm():SecurityRealm"})
+
+// &begin[feat_Jenkins]
 /**
  * Root object of the system.
  *
@@ -381,7 +389,7 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
      * If we're in the process of an initial setup,
      * this will be set
      */
-    private transient SetupWizard setupWizard;
+    private transient SetupWizard setupWizard; // &line[use_SetupWizard]
 
     /**
      * Number of executors of the built-in node.
@@ -400,6 +408,7 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
      * @see #authorizationStrategy
      * @see #securityRealm
      */
+    @Integrity
     private Boolean useSecurity;
 
     /**
@@ -411,7 +420,8 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
      *
      * Never null.
      */
-    private volatile AuthorizationStrategy authorizationStrategy = AuthorizationStrategy.UNSECURED;
+    @Integrity
+    private volatile AuthorizationStrategy authorizationStrategy = AuthorizationStrategy.UNSECURED; // &line[use_AuthorizationStrategy]
 
     /**
      * Controls a part of the
@@ -428,7 +438,8 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
      * @see #getSecurity()
      * @see #setSecurityRealm(SecurityRealm)
      */
-    private volatile SecurityRealm securityRealm = SecurityRealm.NO_AUTHENTICATION;
+    @Integrity
+    private volatile SecurityRealm securityRealm = SecurityRealm.NO_AUTHENTICATION; // &line[use_SecurityRealm]
 
     /**
      * Disables the "Keep me signed in" option in the standard login screen.
@@ -871,6 +882,7 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
      * container start/stop. Persisted outside {@code config.xml} to avoid
      * accidental exposure.
      */
+    @Secrecy @Integrity
     private final transient String secretKey;
 
     private final transient UpdateCenter updateCenter = UpdateCenter.createUpdateCenter(null);
@@ -919,7 +931,7 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
         long start = System.currentTimeMillis();
         STARTUP_MARKER_FILE = new FileBoolean(new File(root, ".lastStarted"));
         // As Jenkins is starting, grant this process full control
-        try (ACLContext ctx = ACL.as2(ACL.SYSTEM2)) {
+		try (ACLContext ctx = ACL.as2(ACL.SYSTEM2)) {
             this.root = root;
             this.servletContext = context;
             computeVersion(context);
@@ -2753,6 +2765,7 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
         return SecurityMode.SECURED;
     }
 
+    // &begin[use_SecurityRealm]
     /**
      * @return
      *      never null.
@@ -2803,7 +2816,7 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
             throw new RuntimeException("Failed to configure filter", e) {};
         }
     }
-
+    // &end[use_SecurityRealm]
     /**
      * Sets a new authorization strategy.
      * @param a Authorization strategy to set.
@@ -5916,3 +5929,4 @@ public class Jenkins extends AbstractCIBase implements DirectlyModifiableTopLeve
         }
     }
 }
+// &end[feat_Jenkins]

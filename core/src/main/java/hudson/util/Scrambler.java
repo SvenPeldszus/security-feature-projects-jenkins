@@ -29,6 +29,7 @@ import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+// &begin[feat_Scrambler]
 /**
  * Scrambles, but does not encrypt, text.
  * <strong>Do not use this</strong> for storing passwords and the like in configuration.
@@ -39,10 +40,12 @@ import java.util.logging.Logger;
 public class Scrambler {
     private static final Logger LOGGER = Logger.getLogger(Scrambler.class.getName());
 
+    // &start[use_Secret]
     public static String scramble(String secret) {
         if (secret == null)    return null;
         return Base64.getEncoder().encodeToString(secret.getBytes(StandardCharsets.UTF_8));
     }
+    // &end[use_Secret]
 
     public static String descramble(String scrambled) {
         if (scrambled == null)    return null;
@@ -54,3 +57,4 @@ public class Scrambler {
         }
     }
 }
+// &end[feat_Scrambler]

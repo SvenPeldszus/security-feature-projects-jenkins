@@ -21,6 +21,11 @@ import java.util.Set;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 
+import org.gravity.security.annotations.requirements.*;
+
+@Critical(secrecy={"SecretRewriter.tryRewrite(String):String", "SecretRewriter.SecretRewriter()"}, integrity={"SecretRewriter.tryRewrite(String):String", "SecretRewriter.SecretRewriter()"})
+
+// &begin[feat_SecretRewriter]
 /**
  * Rewrites XML files by looking for Secrets that are stored with the old key and replaces them
  * by the new encrypted values.
@@ -28,8 +33,10 @@ import javax.crypto.SecretKey;
  * @author Kohsuke Kawaguchi
  */
 public class SecretRewriter {
-    private final Cipher cipher;
-    private final SecretKey key;
+	@Secrecy @Integrity
+    private final Cipher cipher; // &line[use_Cipher]
+	@Secrecy @Integrity
+    private final SecretKey key; // &line[use_SecretKey]
 
     /**
      * How many files have been scanned?
@@ -66,7 +73,7 @@ public class SecretRewriter {
             return s;   // not a valid base64
         }
         cipher.init(Cipher.DECRYPT_MODE, key);
-        Secret sec = HistoricalSecrets.tryDecrypt(cipher, in);
+        Secret sec = HistoricalSecrets.tryDecrypt(cipher, in); // &line[use_Secret] // &line[use_HistoricalSecrets]
         if (sec != null) // matched
             return sec.getEncryptedValue(); // replace by the new encrypted value
         else // not encrypted with the legacy key. leave it unmodified
@@ -211,3 +218,4 @@ public class SecretRewriter {
             IS_BASE64[chars.charAt(i)] = true;
     }
 }
+// &end[feat_SecretRewriter]

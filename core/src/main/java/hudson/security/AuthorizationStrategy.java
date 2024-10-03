@@ -49,6 +49,7 @@ import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.StaplerRequest;
 
+// &begin[feat_AuthorizationStrategy]
 /**
  * Controls authorization throughout Hudson.
  *
@@ -230,7 +231,7 @@ public abstract class AuthorizationStrategy extends AbstractDescribableImpl<Auth
             return Collections.emptySet();
         }
 
-        private static final ACL UNSECURED_ACL = ACL.lambda2((a, p) -> true);
+        private static final ACL UNSECURED_ACL = ACL.lambda2((a, p) -> true); // &line[use_ACL]
 
         @Extension @Symbol("unsecured")
         public static final class DescriptorImpl extends Descriptor<AuthorizationStrategy> {
@@ -247,3 +248,4 @@ public abstract class AuthorizationStrategy extends AbstractDescribableImpl<Auth
         }
     }
 }
+// &end[feat_AuthorizationStrategy]

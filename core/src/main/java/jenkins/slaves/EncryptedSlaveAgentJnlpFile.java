@@ -26,7 +26,11 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.ResponseImpl;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.gravity.security.annotations.requirements.*;
 
+@Critical(secrecy={"generateResponse(StaplerRequest, StaplerResponse, Object):void"}, integrity={"generateResponse(StaplerRequest, StaplerResponse, Object):void"})
+
+// &begin[feat_EncryptJNLPFile]
 /**
  * Serves the JNLP file.
  *
@@ -39,28 +43,32 @@ import org.kohsuke.stapler.StaplerResponse;
 public class EncryptedSlaveAgentJnlpFile implements HttpResponse {
 
     private static final Logger LOG = Logger.getLogger(EncryptedSlaveAgentJnlpFile.class.getName());
-    private static final SecureRandom RANDOM = new SecureRandom();
+    @Secrecy
+    private static final SecureRandom RANDOM = new SecureRandom(); // &line[use_SecureRandom]
 
     /**
      * The object that owns the Jelly view that renders JNLP file.
      * This is typically a {@link SlaveComputer} and if so we'll use {@link SlaveComputer#getJnlpMac()}
      * to determine the secret HMAC code.
      */
-    private final AccessControlled it;
+    @Integrity
+    private final AccessControlled it;  // &line[use_AccessControlled]
     /**
      * Name of the view that renders JNLP file that belongs to {@link #it}.
      */
+    @Integrity
     private final String viewName;
     /**
      * Name of the agent, which is used to determine secret HMAC code if {@link #it}
      * is not a {@link SlaveComputer}.
      */
+    @Integrity
     private final String slaveName;
-
     /**
      * Permission that allows plain text access. Checked against {@link #it}.
      */
-    private final Permission connectPermission;
+    @Integrity
+    private final Permission connectPermission; // &line[use_Permission]
 
     public EncryptedSlaveAgentJnlpFile(AccessControlled it, String viewName, String slaveName, Permission connectPermission) {
         this.it = it;
@@ -94,10 +102,10 @@ public class EncryptedSlaveAgentJnlpFile implements HttpResponse {
             } else {
                 jnlpMac = JnlpAgentReceiver.SLAVE_SECRET.mac(slaveName.getBytes(StandardCharsets.UTF_8));
             }
-            SecretKey key = new SecretKeySpec(jnlpMac, 0, /* export restrictions */ 128 / 8, "AES");
+            SecretKey key = new SecretKeySpec(jnlpMac, 0, /* export restrictions */ 128 / 8, "AES");  // &line[use_SecretKey]
             byte[] encrypted;
             try {
-                Cipher c = Secret.getCipher("AES/CFB8/NoPadding");
+                Cipher c = Secret.getCipher("AES/CFB8/NoPadding");  // &line[use_Cipher]
                 c.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
                 encrypted = c.doFinal(csos.getBytes());
             } catch (GeneralSecurityException x) {
@@ -160,3 +168,4 @@ public class EncryptedSlaveAgentJnlpFile implements HttpResponse {
         }
     }
 }
+// &end[feat_EncryptJNLPFile]
